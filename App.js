@@ -5,64 +5,62 @@ import moment from 'moment';
 
 
 const SelectorTimePicker = () => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [esreloj2visible, setreloj2visible] = useState(false);
+  const [esreloj3visible, setreloj3visible] = useState(false);
 
-  const [selectedDate, setselectedDate] = useState('Fecha');
-  const [selectedTime, setselecteTime] = useState('horario');
-  const [horaseleccionada, sethoraseleccionada] = useState('horario');
+  const [hrPresentacion, setHrPresentacion] = useState('Presentacion');
+  const [hrETD, setHrETD] = useState('Despegue');
+  const [hrETA, setHrETA] = useState('Aterrizaje');
 
-  const [diferencia, setdiferencia] = useState('resultado');
+  const [diferencia, setdiferencia] = useState('Utl ETD');
 
   const [ulteta, setulteta] = useState('ulteta');
 
-  
-//SELECTOR FECHA
-   const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    const dt = new Date(date);
-    const x = dt.toISOString().split('T');
-    const x1 = x[0].split('-');
-    setselectedDate(x1[2] + '/' + x1[1] + '/' + x1[0]);
-    hideDatePicker();
-  };
-////////-----------------
 
 //SELECTOR HORARIO
-const showTimePicker = () => {
+
+////Preaentacion
+const mostrarreloj1 = () => {
   setTimePickerVisibility(true);
 };
 
-const hideTimePicker = () => {
+const cerrarreloj1 = () => {
   setTimePickerVisibility(false);
+  setHrPresentacion('Presentacion');
 };
 
-///// HORARIO-2
+///// Despegue
 
-const motrarreloj2 = () => {
+const mostrarreloj2 = () => {
   setreloj2visible(true);
 };
 
 const cerrarreloj2 = () => {
   setreloj2visible(false);
+  setHrETD('Despegue');
+
+};
+
+///// Aterrizaje
+
+const mostrarreloj3 = () => {
+  setreloj3visible(true);
+};
+
+const cerrarreloj3 = () => {
+  setreloj3visible(false);
+  setHrETA('Aterrizaje');
 };
 
 
 
 const calcular = ()=>{
   // Convertir a milisegundos
- const ST = moment(selectedTime, 'HH:mm').toDate(); 
+ const ST = moment(hrPresentacion, 'HH:mm').toDate(); 
  var selectedTimeMS = ST.getTime(); 
 
- const HS = moment(horaseleccionada, 'HH:mm').toDate();
+ const HS = moment(hrETD, 'HH:mm').toDate();
  var horaseleccionadaMS = HS.getTime(); 
 
  // Restar las fechas para obtener la diferencia en milisegundos
@@ -189,27 +187,15 @@ setulteta(ultetaDate.getHours() + ':' + ultetaDate.getMinutes()+ ' ETA');
 
 
     return (
-   //   <View style={Styles.contenedor}>
 
         <ImageBackground source={require('./assets/sky1.jpg')} style={Styles.fondo}>
-      
-        <TouchableOpacity style={Styles.botones}
-        onPress={()=>{showDatePicker();}}
-        >
-        <Text>{selectedDate}</Text>
-        </TouchableOpacity>
-        
-        <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode='date'
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker} />
 
-        
-<TouchableOpacity style={Styles.botones}
-        onPress={()=>{showTimePicker();}} >
+ <View style={Styles.inputs}>       
 
-        <Text>{selectedTime}</Text>
+       <TouchableOpacity style={Styles.relojes}
+        onPress={()=>{mostrarreloj1();}} >
+
+        <Text>{hrPresentacion}</Text>
         </TouchableOpacity>
         
         <DateTimePickerModal
@@ -217,15 +203,14 @@ setulteta(ultetaDate.getHours() + ':' + ultetaDate.getMinutes()+ ' ETA');
         mode='time'
         is24Hour
          onConfirm={(time) => {
-          setselecteTime(time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
+          setHrPresentacion(time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
           setTimePickerVisibility(false);}} 
+         onCancel={cerrarreloj1} />
 
-        onCancel={hideTimePicker} />
+<TouchableOpacity style={Styles.relojes}
+        onPress={()=>{mostrarreloj2();}} >
 
-<TouchableOpacity style={Styles.botones}
-        onPress={()=>{motrarreloj2();}} >
-
-        <Text>{horaseleccionada}</Text>
+        <Text>{hrETD}</Text>
        
         </TouchableOpacity>
         
@@ -234,18 +219,33 @@ setulteta(ultetaDate.getHours() + ':' + ultetaDate.getMinutes()+ ' ETA');
         mode='time'
         is24Hour
         onConfirm={(time) => {
-          sethoraseleccionada(time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
+          setHrETD(time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
           setreloj2visible(false);}}  
           onCancel={cerrarreloj2} />
+</View>
+      
+<TouchableOpacity style={Styles.relojes}
+        onPress={()=>{mostrarreloj3();}} >
 
-      <Button title='Enter'
-      onPress={calcular}/>
+        <Text>{hrETA}</Text>
+       
+        </TouchableOpacity>
+        
+        <DateTimePickerModal
+        isVisible={esreloj3visible}
+        mode='time'
+        is24Hour
+        onConfirm={(time) => {
+          setHrETA(time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
+          setreloj3visible(false);}}  
+          onCancel={cerrarreloj3} />
 
       <Text>{diferencia}</Text>
       
       <Text>{ulteta}</Text>
+      <Button title='Enter'
+      onPress={calcular}/>
       </ImageBackground>
-   //   </View>
     )
 
 
@@ -253,19 +253,18 @@ setulteta(ultetaDate.getHours() + ':' + ultetaDate.getMinutes()+ ' ETA');
 };
 
 const Styles = StyleSheet.create({
- /* contenedor:{
-  backgroundColor:'lightgrey',
-  flex:1,
-  justifyContent:'center',
+  inputs :{
+  flexDirection:'row',
+  justifyContent:'space-around',
   alignItems:'center',
   },
-*/
-  botones:{
+
+  relojes:{
     width:'40%',
     height: 40,
     borderRadius:1,
     borderWidth: 0.7,
-    backgroundColor:'lime',
+    backgroundColor:'yellow',
     opacity:0.6,
     alignItems:'center',
     justifyContent:'center',
